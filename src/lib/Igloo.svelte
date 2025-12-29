@@ -14,7 +14,8 @@
   baseGeometry.scale(1, 0.85, 1);
 
   const wireGeometry = new THREE.WireframeGeometry(baseGeometry);
-  wireGeometry.computeLineDistances();
+  const wireHelper = new THREE.LineSegments(wireGeometry);
+  wireHelper.computeLineDistances();
 
   const uniforms = {
     uTime: { value: 0 },

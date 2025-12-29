@@ -32,6 +32,7 @@
   });
 
   useTask(({ camera }, delta) => {
+    if (!camera) return;
     smoothMouse.lerp(mouse, 0.08);
 
     const heroMix = clamp(1 - scrollProgress * 2.4);
