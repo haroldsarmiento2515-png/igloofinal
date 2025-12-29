@@ -44,9 +44,12 @@
   let mesh;
   let floatOffset = Math.random() * Math.PI * 2;
 
-  useTask(({ clock }) => {
+  let elapsed = 0;
+
+  useTask((_, delta) => {
     if (!mesh) return;
-    const time = clock.getElapsedTime();
+    elapsed += delta;
+    const time = elapsed;
     const floatY = Math.sin(time * 1.2 + floatOffset) * 0.18;
 
     const yPosition = (index - offset) * -4 + floatY;
