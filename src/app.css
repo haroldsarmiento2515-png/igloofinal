@@ -1,9 +1,8 @@
 :root {
-  --dark-bg: #000000;
-  --accent-color: #ff0055;
-  --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color-scheme: light;
+  background-color: #dfe7f1;
+  color: #1b2127;
 }
 
 * {
@@ -12,53 +11,63 @@
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
-  background: var(--dark-bg);
-  color: var(--text-primary);
+  min-height: 100vh;
 }
 
-a {
-  color: var(--text-primary);
-  text-decoration: none;
+main {
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
 
 button {
   cursor: pointer;
-  font-family: var(--font-sans);
-  border-radius: 4px;
+  font-family: inherit;
+  border-radius: 999px;
   border: none;
-  padding: 1rem 2rem;
-  font-weight: 700;
-  background: var(--accent-color);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  padding: 0.8rem 1.8rem;
+  font-weight: 600;
+  background: #1b2127;
+  color: #f7f9fb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-  background: #e6004d;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(16, 20, 24, 0.18);
 }
 
-section {
-  padding: 4rem 2rem;
+.loading,
+.fallback {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 4rem 6vw;
+  text-align: left;
+  gap: 2rem;
+  background: linear-gradient(180deg, #e7eef7 0%, #cbd4df 100%);
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+.loading {
+  font-size: 1rem;
+  color: #3a424b;
 }
 
-h1, h2, h3 {
-  font-weight: 900;
-  margin-bottom: 1rem;
+.fallback {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-p {
-  line-height: 1.5;
-  color: var(--text-secondary);
+.fallback h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
 }
 
-@media (max-width: 768px) {
-  section {
-    padding: 2rem 1rem;
-  }
+.fallback .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-size: 0.7rem;
+  color: #404851;
 }
