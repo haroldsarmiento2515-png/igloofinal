@@ -32,8 +32,11 @@
     depthWrite: false
   });
 
-  useTask(({ clock }) => {
-    const time = clock.getElapsedTime();
+  let elapsed = 0;
+
+  useTask((_, delta) => {
+    elapsed += delta;
+    const time = elapsed;
 
     for (let i = 0; i < count; i += 1) {
       const base = basePositions[i];
