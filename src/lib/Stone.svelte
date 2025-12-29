@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { T, useFrame } from '@threlte/core';
+  import { T, useTask } from '@threlte/core';
   import * as THREE from 'three';
 
   export let color = '#dfe2e8';
@@ -44,7 +44,7 @@
   let mesh;
   let floatOffset = Math.random() * Math.PI * 2;
 
-  useFrame(({ clock }) => {
+  useTask(({ clock }) => {
     if (!mesh) return;
     const time = clock.getElapsedTime();
     const floatY = Math.sin(time * 1.2 + floatOffset) * 0.18;
