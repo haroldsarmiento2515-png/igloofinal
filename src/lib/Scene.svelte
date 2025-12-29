@@ -7,6 +7,8 @@
   import Snow from './Snow.svelte';
   import Stone from './Stone.svelte';
   import CameraRig from './CameraRig.svelte';
+  import Terrain from './Terrain.svelte';
+  import Backdrop from './Backdrop.svelte';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -44,7 +46,7 @@
 
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
-  let heroMix = 0;
+  let heroMix = 1;
   let interiorMix = 0;
   let galleryMix = 0;
   let galleryOffset = 0;
@@ -55,6 +57,8 @@
     galleryMix = clamp((scrollProgress - 0.52) / 0.48);
     galleryOffset = galleryMix * (stones.length - 1);
   };
+
+  updateScrollValues();
 
   const openPortal = () => {
     if (modalOpen) return;
@@ -110,16 +114,22 @@
   <div class="canvas-wrap" aria-hidden="true">
     <Canvas dpr={[1, 1.8]} shadows>
       <T.PerspectiveCamera makeDefault position={[0, 1.6, 9]} fov={42} near={0.1} far={40} />
-      <T.Fog color={'#2e343b'} near={6} far={18} />
-      <T.AmbientLight intensity={0.65} />
-      <T.DirectionalLight position={[4, 6, 4]} intensity={1.1} />
-      <T.DirectionalLight position={[-6, 4, -4]} intensity={0.55} color={'#c6d1dc'} />
+      <T.Fog color={'#c2ccd6'} near={6} far={28} />
+      <T.HemisphereLight intensity={0.55} groundColor={'#98a3b0'} color={'#e8f1fb'} />
+      <T.AmbientLight intensity={0.45} />
+      <T.DirectionalLight position={[7, 10, 6]} intensity={1.4} color={'#f4f8ff'} />
+      <T.DirectionalLight position={[-10, 7, -6]} intensity={0.65} color={'#c9d7e6'} />
+      <T.PointLight position={[2, 2.2, 3]} intensity={0.8} color={'#f0f7ff'} />
 
       <CameraRig {scrollProgress} {portalProgress} />
 
-      <group position={[0, -0.6, 0]}>
+      <group position={[0, -1.2, 0]}>
+        <Terrain />
         <Igloo {heroMix} {interiorMix} />
         <Snow {heroMix} />
+      </group>
+      <group position={[0, 1.2, -15]}>
+        <Backdrop />
       </group>
 
       {#each stones as stone, index}
