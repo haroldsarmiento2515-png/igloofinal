@@ -1,127 +1,101 @@
 <script>
   import { onMount } from 'svelte';
-  import * as THREE from 'three';
-  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import IglooHero from './lib/IglooHero.svelte';
+  import InteriorScene from './lib/InteriorScene.svelte';
+  import StoneModal from './lib/StoneModal.svelte';
 
-  let container;
+  let scrollY = 0;
+  let viewportHeight = 1;
+  let reducedMotion = false;
+  let modalOpen = false;
+  let ticking = false;
+
+  const clamp01 = (value) => Math.max(0, Math.min(1, value));
+
+  const updateScroll = () => {
+    scrollY = window.scrollY;
+    ticking = false;
+  };
+
+  const onScroll = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateScroll);
+      ticking = true;
+    }
+  };
+
+  const onResize = () => {
+    viewportHeight = window.innerHeight;
+  };
 
   onMount(() => {
-    // 1. Create the Scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a2e);
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reducedMotion = media.matches;
 
-    // 2. Create the Camera
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
+    const handleMedia = (event) => {
+      reducedMotion = event.matches;
+    };
 
-    // 3. Create the Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
+    viewportHeight = window.innerHeight;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    media.addEventListener('change', handleMedia);
 
-    // 4. Add Orbit Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.enablePan = true;
-
-    // 5. Create a Cube
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ 
-      color: 0x6366f1,
-      metalness: 0.3,
-      roughness: 0.4
-    });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    // 6. Add a second object - Icosahedron (ice-like shape)
-    const icoGeometry = new THREE.IcosahedronGeometry(0.7, 0);
-    const icoMaterial = new THREE.MeshStandardMaterial({
-      color: 0x88ccff,
-      metalness: 0.2,
-      roughness: 0.1,
-      transparent: true,
-      opacity: 0.8
-    });
-    const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
-    icosahedron.position.x = 2.5;
-    scene.add(icosahedron);
-
-    // 7. Add a Torus Knot
-    const torusGeometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
-    const torusMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff6b9d,
-      metalness: 0.5,
-      roughness: 0.2
-    });
-    const torusKnot = new THREE.Mesh(torusGeometry, torusMaterial);
-    torusKnot.position.x = -2.5;
-    scene.add(torusKnot);
-
-    // 8. Add Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-
-    const pointLight2 = new THREE.PointLight(0x88ccff, 0.5);
-    pointLight2.position.set(-5, -5, 5);
-    scene.add(pointLight2);
-
-    // 9. Animation Loop
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      // Rotate objects
-      cube.rotation.x += 0.005;
-      cube.rotation.y += 0.005;
-      
-      icosahedron.rotation.x += 0.008;
-      icosahedron.rotation.y += 0.006;
-      
-      torusKnot.rotation.x += 0.007;
-      torusKnot.rotation.y += 0.009;
-
-      // Update controls
-      controls.update();
-
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // 10. Handle Window Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      media.removeEventListener('change', handleMedia);
+    };
   });
+
+  $: sectionProgress = scrollY / viewportHeight;
+  $: heroProgress = clamp01(sectionProgress);
+  $: interiorSwitch = clamp01(sectionProgress - 1);
+  $: interior1Opacity = clamp01(heroProgress - interiorSwitch);
+  $: interior2Opacity = interiorSwitch;
+  $: heroScale = 1 + heroProgress * 0.2;
+  $: heroFade = 1 - heroProgress * 0.9;
+  $: stoneExit = interiorSwitch;
+  $: stoneAppear = interiorSwitch;
 </script>
 
-<div bind:this={container} class="canvas-container"></div>
+<svelte:window class:reduced-motion={reducedMotion} />
 
-<style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
+{#if modalOpen}
+  <StoneModal on:close={() => (modalOpen = false)} />
+{/if}
 
-  .canvas-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>
+<div class="scroll-root">
+  <div class="stage">
+    <div class="hero-stage" style={`--scale:${heroScale}; --fade:${heroFade};`}>
+      <IglooHero progress={heroProgress} {reducedMotion} />
+    </div>
+    <div class="interior-stage">
+      <InteriorScene
+        opacity={interior1Opacity}
+        depth={heroProgress}
+        stoneVariant="glow"
+        {reducedMotion}
+        stoneExitProgress={stoneExit}
+        stoneAppearProgress={1}
+        label="Inside the igloo"
+        onStoneClick={() => (modalOpen = true)}
+      />
+      <InteriorScene
+        opacity={interior2Opacity}
+        depth={interiorSwitch}
+        stoneVariant="etched"
+        {reducedMotion}
+        stoneExitProgress={0}
+        stoneAppearProgress={stoneAppear}
+        label="Deeper in the ice"
+        onStoneClick={() => (modalOpen = true)}
+      />
+    </div>
+  </div>
+  <div class="scroll-spacer">
+    <section class="scroll-section" />
+    <section class="scroll-section" />
+    <section class="scroll-section" />
+  </div>
+</div>
