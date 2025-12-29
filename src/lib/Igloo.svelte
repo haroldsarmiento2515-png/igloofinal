@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { T, useFrame } from '@threlte/core';
+  import { T, useTask } from '@threlte/core';
   import { gsap } from 'gsap';
   import * as THREE from 'three';
 
@@ -105,7 +105,7 @@
     };
   });
 
-  useFrame((_, delta) => {
+  useTask((_, delta) => {
     uniforms.uTime.value += delta * 0.6;
     uniforms.uOpacity.value = wireOpacity * heroMix;
     solidMaterial.opacity = solidOpacity * (0.2 + interiorMix * 0.8);

@@ -1,5 +1,5 @@
 <script>
-  import { T, useFrame } from '@threlte/core';
+  import { T, useTask } from '@threlte/core';
   import * as THREE from 'three';
 
   export let heroMix = 1;
@@ -32,7 +32,7 @@
     depthWrite: false
   });
 
-  useFrame(({ clock }) => {
+  useTask(({ clock }) => {
     const time = clock.getElapsedTime();
 
     for (let i = 0; i < count; i += 1) {

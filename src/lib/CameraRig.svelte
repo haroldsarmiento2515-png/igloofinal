@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { useFrame } from '@threlte/core';
+  import { useTask } from '@threlte/core';
   import * as THREE from 'three';
 
   export let scrollProgress = 0;
@@ -31,7 +31,7 @@
     };
   });
 
-  useFrame(({ camera }, delta) => {
+  useTask(({ camera }, delta) => {
     smoothMouse.lerp(mouse, 0.08);
 
     const heroMix = clamp(1 - scrollProgress * 2.4);
