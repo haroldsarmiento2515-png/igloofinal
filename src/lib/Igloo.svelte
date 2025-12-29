@@ -21,7 +21,7 @@
     uTime: { value: 0 },
     uDashSize: { value: 0.32 },
     uGapSize: { value: 0.22 },
-    uGlow: { value: 1.5 },
+    uGlow: { value: 2.1 },
     uOpacity: { value: 1 }
   };
 
@@ -58,12 +58,14 @@
 
   const solidMaterial = new THREE.MeshPhysicalMaterial({
     color: '#dfe9f2',
-    roughness: 0.35,
-    transmission: 0.55,
-    thickness: 1.2,
+    roughness: 0.32,
+    transmission: 0.4,
+    thickness: 1,
     ior: 1.2,
     metalness: 0.0,
-    clearcoat: 0.4,
+    clearcoat: 0.5,
+    emissive: new THREE.Color('#d9ecff'),
+    emissiveIntensity: 0.35,
     transparent: true,
     opacity: 0
   });

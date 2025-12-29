@@ -4,7 +4,7 @@
 
   export let heroMix = 1;
 
-  const count = 900;
+  const count = 1200;
   const stride = 3;
 
   const array = new Float32Array(count * stride);
@@ -14,9 +14,9 @@
   const basePositions = [];
 
   for (let i = 0; i < count; i += 1) {
-    const x = (Math.random() - 0.5) * 18;
-    const y = Math.random() * 8 + 0.5;
-    const z = (Math.random() - 0.5) * 12;
+    const x = (Math.random() - 0.5) * 22;
+    const y = Math.random() * 10 + 0.5;
+    const z = (Math.random() - 0.5) * 18;
     positions.setXYZ(i, x, y, z);
     basePositions.push({ x, y, z, offset: Math.random() * Math.PI * 2 });
   }
@@ -25,11 +25,12 @@
   geometry.setAttribute('position', positions);
 
   const material = new THREE.PointsMaterial({
-    size: 0.06,
+    size: 0.08,
     color: '#f8fbff',
     transparent: true,
-    opacity: 0.75,
-    depthWrite: false
+    opacity: 0.9,
+    depthWrite: false,
+    depthTest: false
   });
 
   let elapsed = 0;
@@ -51,7 +52,7 @@
     }
 
     positions.needsUpdate = true;
-    material.opacity = 0.75 * heroMix;
+    material.opacity = 0.9 * heroMix;
   });
 </script>
 
